@@ -1,7 +1,7 @@
 import * as Ariakit from "@ariakit/react";
 import "../css/Form.css";
 
-export default function Example() {
+export default function Form() {
     const form = Ariakit.useFormStore({ defaultValues: { name: "", email: "" } });
 
     form.useSubmit(async (state) => {
@@ -11,11 +11,11 @@ export default function Example() {
     return (
         <Ariakit.Form
             store={form}
-            aria-labelledby="add-new-participant"
+            aria-labelledby="Login"
             className="wrapper"
         >
-            <h2 id="add-new-participant" className="heading">
-                Add new participant
+            <h2 id="Login" className="heading">
+                Login
             </h2>
             <div className="field">
                 <Ariakit.FormLabel name={form.names.name}>Name</Ariakit.FormLabel>
@@ -42,7 +42,7 @@ export default function Example() {
                 <Ariakit.FormReset className="button secondary reset">
                     Reset
                 </Ariakit.FormReset>
-                <Ariakit.FormSubmit className="button">Add</Ariakit.FormSubmit>
+                <Ariakit.FormSubmit className="button">Login</Ariakit.FormSubmit>
             </div>
         </Ariakit.Form>
     );
