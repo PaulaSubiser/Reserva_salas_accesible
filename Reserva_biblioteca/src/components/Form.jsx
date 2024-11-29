@@ -39,7 +39,7 @@ export default function Form() {
                 <Ariakit.FormError name={form.names.email} className="error" />
             </div>
             <div className="buttons">
-                <Ariakit.FormReset className="button secondary reset">
+                <Ariakit.FormReset className="button">
                     Reset
                 </Ariakit.FormReset>
                 <Ariakit.FormSubmit className="button">Login</Ariakit.FormSubmit>
