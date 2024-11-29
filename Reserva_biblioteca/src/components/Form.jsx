@@ -1,11 +1,13 @@
 import * as Ariakit from "@ariakit/react";
+import { Link } from "react-router-dom";
 import "../css/Form.css";
+
 
 export default function Form() {
     const form = Ariakit.useFormStore({ defaultValues: { name: "", email: "" } });
 
     form.useSubmit(async (state) => {
-        alert(JSON.stringify(state.values));
+        window.location.href = "/Home";
     });
 
     return (
@@ -13,6 +15,7 @@ export default function Form() {
             store={form}
             aria-labelledby="Login"
             className="wrapper"
+            style={{margin:" 30vh 30vw"}}
         >
             <h2 id="Login" className="heading">
                 Login
@@ -42,7 +45,9 @@ export default function Form() {
                 <Ariakit.FormReset className="button">
                     Reset
                 </Ariakit.FormReset>
-                <Ariakit.FormSubmit className="button">Login</Ariakit.FormSubmit>
+                <Ariakit.FormSubmit className="button">
+                    Login
+                </Ariakit.FormSubmit>
             </div>
         </Ariakit.Form>
     );
