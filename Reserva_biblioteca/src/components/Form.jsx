@@ -15,7 +15,6 @@ export default function Form() {
             store={form}
             aria-labelledby="Login"
             className="wrapper"
-            style={{margin:" 30vh 30vw"}}
         >
             <h2 id="Login" className="heading">
                 Login
@@ -31,15 +30,15 @@ export default function Form() {
                 <Ariakit.FormError name={form.names.name} className="error" />
             </div>
             <div className="field">
-                <Ariakit.FormLabel name={form.names.email}>Email</Ariakit.FormLabel>
+                <Ariakit.FormLabel name={form.names.password}>Password</Ariakit.FormLabel>
                 <Ariakit.FormInput
-                    type="text"
-                    name={form.names.email}
-                    placeholder="johndoe@example.com"
+                    type="password"
+                    name={form.names.password}
+                    placeholder="password"
                     className="input"
                     required
                 />
-                <Ariakit.FormError name={form.names.email} className="error" />
+                <Ariakit.FormError name={form.names.password} className="error" />
             </div>
             <div className="buttons">
                 <Ariakit.FormReset className="button">
