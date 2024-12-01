@@ -1,0 +1,29 @@
+/* ScheduleSelector.css */
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 100px repeat(6, 1fr); /* 100px para la columna de horas y 6 columnas para las salas */
+  grid-template-rows: repeat(13, 1fr);  /* 13 filas para las horas de 9 a 21 */
+  gap: 4px;
+  width: 100%;
+  height: 100vh;
+}
+
+.time-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f1f1;
+  font-weight: bold;
+  user-select: none;
+}
+
+.day-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f1f1;
+  font-weight: bold;
+  user-select: none;
+  border-left: 1px solid #ccc; /* Añadido para separación visual entre celdas */
+}
