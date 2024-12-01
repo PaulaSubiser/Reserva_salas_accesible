@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import '../css/Cell.css'; // Importa el archivo CSS
+import styles from '../css/Cell.module.css'; // Importa el archivo CSS
 
 const Cell = ({ time, onClick, onFocus, onKeyDown, isSelected, isHovered, isFocused }) => {
   const cellRef = useRef(null);
@@ -31,7 +31,7 @@ const Cell = ({ time, onClick, onFocus, onKeyDown, isSelected, isHovered, isFocu
   return (
     <div
       ref={cellRef}  // Referencia para el enfoque manual
-      className={cellClasses}  // Usamos las clases CSS
+      className={styles.cellClasses}  // Usamos las clases CSS
       tabIndex={0}  // Hacerla accesible con tab
       onClick={() => onClick(time)}
       onFocus={() => onFocus(time)}

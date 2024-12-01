@@ -30,6 +30,20 @@ export default function Form() {
 
     form.useSubmit(async (state) => {
         alert(JSON.stringify(form.getState().values));
+        var reservas = JSON.parse(localStorage.getItem("reservas") || "[]");
+        //localStorage.clear();
+        alert(JSON.stringify(reservas));
+        var ids = reservas.map(reserva => reserva.id);
+        var id_reserva = 0;
+        if (ids != ""){
+            var maxId = Math.max(...ids);
+            alert(ids);
+            id_reserva = maxId + 1;
+        }
+        var reserva = {id: id_reserva, fecha: form.getState().values["calendar"], centro: form.getState().values["centro"]};
+        reservas.push(reserva)
+        alert(JSON.stringify(reservas))
+        localStorage.setItem("reservas", JSON.stringify(reservas));
     });
 
     return (

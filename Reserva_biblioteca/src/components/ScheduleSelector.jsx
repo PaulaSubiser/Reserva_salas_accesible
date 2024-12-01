@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../css/ScheduleSelector.css';  // Importa el archivo CSS
+import styles from '../css/ScheduleSelector.module.css';  // Importa el archivo CSS
 import Cell from './Cell'; // Componente de celda
 
 const ScheduleSelector = () => {
@@ -73,17 +73,17 @@ const ScheduleSelector = () => {
   const rooms = ['Sala 1', 'Sala 2', 'Sala 3', 'Sala 4', 'Sala 5', 'Sala 6']; // Salas
 
   return (
-    <div className="wrapper">
+    <div className={styles.wrapper}>
       {/* Encabezado de la Tabla con las Salas */}
-      <div className="time-label"></div> {/* Celda vacía en la esquina superior izquierda */}
+      <div className={styles.timelabel}></div> {/* Celda vacía en la esquina superior izquierda */}
       {rooms.map((room, roomIndex) => (
-        <div className="day-label" key={roomIndex}>{room}</div>
+        <div className={styles.daylabel} key={roomIndex}>{room}</div>
       ))}
 
       {/* Filas de las Horas */}
       {times.map((time, timeIndex) => (
         <React.Fragment key={timeIndex}>
-          <div className="time-label">{time}</div> {/* Hora en la primera columna */}
+          <div className={styles.timelabel}>{time}</div> {/* Hora en la primera columna */}
           {rooms.map((room, roomIndex) => {
             const currentTime = `${room}-${time}`;
             const isSelected = selectedTimes.includes(currentTime);
