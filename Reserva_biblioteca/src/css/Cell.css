@@ -1,0 +1,41 @@
+/* Cell.css */
+
+.cell-wrapper {
+    width: 100%;
+    height: 50px;
+    background-color: var(--paleBlue);
+    border: none;
+    transition: background-color 0.3s, border 0.3s;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .cell-wrapper.selected {
+    background-color: var(--darkBlue);
+  }
+  
+  .cell-wrapper.hovered {
+    background-color: var(--lightBlue);
+  }
+  
+  .cell-wrapper.focused {
+    border: 2px solid var(--darkBlue);
+  }
+  
+  .cell-wrapper:hover {
+    background-color: var(--lightBlue);
+  }
+  
+  .cell-wrapper:focus {
+    outline: none;
+  }
+  
+  /* Variables para los colores */
+  :root {
+    --lightBlue: #ADD8E6;
+    --darkBlue: #00008B;
+    --paleBlue: #B0E0E6;
+  }
