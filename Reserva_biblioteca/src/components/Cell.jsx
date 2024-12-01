@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import styles from '../css/Cell.module.css'; // Importa el archivo CSS
+import styles from '../css/Cell.module.css'; // Importa el archivo CSS como un módulo
 
 const Cell = ({ time, onClick, onFocus, onKeyDown, isSelected, isHovered, isFocused }) => {
   const cellRef = useRef(null);
@@ -23,15 +23,17 @@ const Cell = ({ time, onClick, onFocus, onKeyDown, isSelected, isHovered, isFocu
   };
 
   // Construir las clases dinámicas
-  let cellClasses = 'cell-wrapper';
-  if (isSelected) cellClasses += ' selected';
-  if (isHovered) cellClasses += ' hovered';
-  if (isFocused) cellClasses += ' focused';
+  const cellClasses = `
+    ${styles['cellwrapper']} 
+    ${isSelected ? styles.selected : ''} 
+    ${isHovered ? styles.hovered : ''} 
+    ${isFocused ? styles.focused : ''}
+  `;
 
   return (
     <div
       ref={cellRef}  // Referencia para el enfoque manual
-      className={styles.cellClasses}  // Usamos las clases CSS
+      className={cellClasses.trim()}  // Usamos las clases CSS
       tabIndex={0}  // Hacerla accesible con tab
       onClick={() => onClick(time)}
       onFocus={() => onFocus(time)}
