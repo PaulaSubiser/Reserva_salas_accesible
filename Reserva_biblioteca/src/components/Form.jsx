@@ -40,6 +40,7 @@ export default function Form() {
                 />
                 <Ariakit.FormError name={form.names.password} className="error" />
             </div>
+            <a href="">Recordar contraseña</a>
             <div className="buttons">
                 <Ariakit.FormReset className="button">
                     Reset
