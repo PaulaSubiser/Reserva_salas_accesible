@@ -4,7 +4,7 @@ import "../css/Form.css";
 
 
 export default function Form() {
-    const form = Ariakit.useFormStore({ defaultValues: { name: "", email: "" } });
+    const form = Ariakit.useFormStore({ defaultValues: { name: "", password: "" } });
 
     form.useSubmit(async (state) => {
         window.location.href = "/Home";

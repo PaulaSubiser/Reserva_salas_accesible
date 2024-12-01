@@ -11,9 +11,17 @@
   },
   "dependencies": {
     "@ariakit/react": "^0.4.15",
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@mui/joy": "^5.0.0-beta.48",
+    "@react-aria/example-theme": "^1.0.5",
     "react": "^18.3.1",
+    "react-ada-keyboard-accessible-datepicker": "^1.2.13",
+    "react-aria": "^3.36.0",
+    "react-aria-components": "^1.5.0",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^7.0.1"
+    "react-router-dom": "^7.0.1",
+    "rsuite": "^5.74.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
