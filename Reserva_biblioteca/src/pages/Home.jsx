@@ -9,7 +9,7 @@ function Home(){
         <NavBar></NavBar>
         <h1> Realiza una reserva </h1>
         <HomeForm />
-        <ScheduleSelector/>
+        <ScheduleSelector fecha="2024-12-02" centro="UPS Leganes" />
         </>
     )
 }
