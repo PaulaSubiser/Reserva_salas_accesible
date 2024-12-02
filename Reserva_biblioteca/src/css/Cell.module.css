@@ -1,42 +1,70 @@
-/* Cell.css */
+/* Variables de colores */
+:root {
+  --lightBlue: #ADD8E6;
+  --darkBlue: #00008B;
+  --paleBlue: #B0E0E6;
+  --selectedGreen: #4caf50;
+  --hoverGray: #f1f1f1;
+  --focusOutline: blue;
+}
 
+/* Estilo base de la celda */
 .cellwrapper {
-    width: 100%;
-    height: 50px;
-    background-color: var(--paleBlue);
-    border: none;
-    transition: background-color 0.3s, border 0.3s;
-    cursor: pointer;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .cellwrapper.selected {
-    background-color: var(--darkBlue);
-  }
-  
-  .cellwrapper.hovered {
-    background-color: var(--lightBlue);
-  }
-  
-  .cellwrapper.focused {
-    border: 2px solid var(--darkBlue);
-  }
-  
-  .cellwrapper:hover {
-    background-color: var(--lightBlue);
-  }
-  
-  .cellwrapper:focus {
-    outline: none;
-  }
-  
-  /* Variables para los colores */
-  :root {
-    --lightBlue: #ADD8E6;
-    --darkBlue: #00008B;
-    --paleBlue: #B0E0E6;
-  }
-  
+  width: 100%;
+  height: 50px;
+  background-color: var(--paleBlue);
+  border: none;
+  transition: background-color 0.3s, border 0.3s;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estado seleccionado */
+.cellwrapper.selected {
+  background-color: var(--darkBlue);
+  color: white;
+}
+
+/* Estado al pasar el mouse */
+.cellwrapper.hovered,
+.cellwrapper:hover {
+  background-color: var(--lightBlue);
+}
+
+/* Estado enfocado */
+.cellwrapper.focused {
+  border: 2px solid var(--darkBlue);
+}
+
+/* Estado seleccionado en modo alternativo */
+.selected {
+  background-color: var(--selectedGreen);
+  color: white;
+}
+
+/* Estado al pasar el mouse en modo alternativo */
+.hovered {
+  background-color: var(--hoverGray);
+}
+
+/* Enfoque alternativo */
+.focused {
+  outline: 2px solid var(--focusOutline);
+}
+
+/* Clase para estado "disabled" */
+.cellwrapper.disabled {
+  background-color: gray; /* Fondo gris */
+  color: white; /* Texto blanco */
+  cursor: not-allowed; /* Cursor deshabilitado */
+}
+
+/* Estilo para el texto de estado */
+.statusText {
+  font-size: 14px; /* Tamaño de la fuente */
+  font-weight: bold; /* Negrita */
+  text-align: center; /* Centrado horizontal */
+}

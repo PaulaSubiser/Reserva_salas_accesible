@@ -1,44 +1,53 @@
 import React, { useRef, useEffect } from 'react';
 import styles from '../css/Cell.module.css'; // Importa el archivo CSS como un módulo
 
-const Cell = ({ time, onClick, onFocus, onKeyDown, isSelected, isHovered, isFocused }) => {
+const Cell = ({ time, status, onClick, onFocus, onKeyDown, isSelected, isHovered, isFocused }) => {
   const cellRef = useRef(null);
 
   useEffect(() => {
     if (isFocused && cellRef.current) {
-      // Si la celda está enfocada, enfocarla manualmente
+      // Enfocar la celda automáticamente si está marcada como "focused"
       cellRef.current.focus();
     }
   }, [isFocused]);
 
   const handleKeyDown = (e) => {
-    // Si se presiona Enter, ejecutamos el onClick
-    if (e.key === 'Enter') {
+    // Ejecutar `onClick` al presionar Enter
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault(); // Prevenir scrolling al presionar la barra espaciadora
       onClick(time);
     }
-    // Manejo de otras teclas
+    // Pasar el evento a `onKeyDown` si existe
     if (onKeyDown) {
       onKeyDown(e, time);
     }
   };
 
-  // Construir las clases dinámicas
-  const cellClasses = `
-    ${styles['cellwrapper']} 
-    ${isSelected ? styles.selected : ''} 
-    ${isHovered ? styles.hovered : ''} 
-    ${isFocused ? styles.focused : ''}
-  `;
+  // Construcción de clases CSS dinámicas
+  const cellClasses = [
+    styles.cellwrapper,
+    isSelected && styles.selected,
+    isHovered && styles.hovered,
+    isFocused && styles.focused,
+    status === 'No disponible' && styles.disabled, // Aplicar estilo "disabled" si corresponde
+  ]
+    .filter(Boolean) // Filtrar valores nulos o falsos
+    .join(' '); // Combinar en una sola cadena
 
   return (
     <div
-      ref={cellRef}  // Referencia para el enfoque manual
-      className={cellClasses.trim()}  // Usamos las clases CSS
-      tabIndex={0}  // Hacerla accesible con tab
-      onClick={() => onClick(time)}
-      onFocus={() => onFocus(time)}
-      onKeyDown={handleKeyDown}
-    />
+      ref={cellRef} // Referencia para manejar el foco
+      className={cellClasses} // Aplicar las clases dinámicas
+      role="gridcell" // Rol de accesibilidad
+      aria-selected={isSelected} // Indicar si está seleccionada
+      tabIndex={isFocused ? 0 : -1} // Solo enfocable si está en foco
+      onClick={() => onClick(time)} // Llamar al manejador de clic
+      onFocus={() => onFocus(time)} // Manejar el foco
+      onKeyDown={handleKeyDown} // Manejar las teclas
+      aria-label={`Celda de ${time}`} // Etiqueta para lectores de pantalla
+    >
+      {status && <span className={styles.statusText}>{status}</span>} {/* Renderizar el estado */}
+    </div>
   );
 };
 

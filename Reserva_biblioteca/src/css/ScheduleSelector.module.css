@@ -1,29 +1,45 @@
-/* ScheduleSelector.css */
-
+/* Contenedor principal del horario */
 .wrapper {
   display: grid;
-  grid-template-columns: 100px repeat(6, 1fr); /* 100px para la columna de horas y 6 columnas para las salas */
-  grid-template-rows: repeat(13, 1fr);  /* 13 filas para las horas de 9 a 21 */
-  gap: 4px;
+  grid-template-columns: 100px repeat(6, 1fr); /* Primera columna para horas, 6 para las salas */
+  grid-template-rows: auto repeat(13, 1fr); /* Fila de encabezado y 13 filas para las horas */
+  gap: 4px; /* Espacio entre celdas */
   width: 100%;
   height: 100vh;
+  background-color: #e0e0e0; /* Fondo general para contraste */
+  border: 1px solid #ccc; /* Borde alrededor del contenedor */
 }
 
+/* Etiquetas de las horas (columna izquierda) */
 .timelabel {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f1f1f1;
+  background-color: #f9f9f9;
   font-weight: bold;
+  text-align: center;
+  border-right: 1px solid #ccc; /* Línea divisoria entre horas y celdas */
   user-select: none;
+  padding: 8px;
 }
 
+/* Etiquetas de los días/salas (fila superior) */
 .daylabel {
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #f1f1f1;
   font-weight: bold;
+  text-align: center;
   user-select: none;
-  border-left: 1px solid #ccc; /* Añadido para separación visual entre celdas */
+  border-bottom: 2px solid #ccc; /* Línea divisoria para el encabezado */
+  padding: 8px;
+}
+
+/* Ajustes para la celda de la esquina superior izquierda */
+.wrapper > .timelabel:first-of-type {
+  grid-column: 1;
+  grid-row: 1;
+  background-color: #e0e0e0;
+  border: none;
 }
