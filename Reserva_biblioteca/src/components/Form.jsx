@@ -16,11 +16,11 @@ export default function Form() {
             aria-labelledby="Login"
             className="wrapper"
         >
-            <h2 id="Login" className="heading">
-                Login
-            </h2>
+            <h1 id="Login" className="heading">
+                Iniciar Sesión
+            </h1>
             <div className="field">
-                <Ariakit.FormLabel name={form.names.name}>Name</Ariakit.FormLabel>
+                <Ariakit.FormLabel name={form.names.name}>Nombre</Ariakit.FormLabel>
                 <Ariakit.FormInput
                     name={form.names.name}
                     placeholder="John Doe"
@@ -30,11 +30,11 @@ export default function Form() {
                 <Ariakit.FormError name={form.names.name} className="error" />
             </div>
             <div className="field">
-                <Ariakit.FormLabel name={form.names.password}>Password</Ariakit.FormLabel>
+                <Ariakit.FormLabel name={form.names.password}>Contraseña</Ariakit.FormLabel>
                 <Ariakit.FormInput
                     type="password"
                     name={form.names.password}
-                    placeholder="password"
+                    placeholder="Introduzca una contraseña"
                     className="input"
                     required
                 />
@@ -43,7 +43,7 @@ export default function Form() {
             <a href="">Recordar contraseña</a>
             <div className="buttons">
                 <Ariakit.FormReset className="button">
-                    Reset
+                    Reiniciar
                 </Ariakit.FormReset>
                 <Ariakit.FormSubmit className="button">
                     Login
