@@ -1,6 +1,6 @@
 /* Contenedor principal del horario */
 .wrapper {
-  display: grid;
+  display: none;
   grid-template-columns: 100px repeat(6, 1fr); /* Primera columna para horas, 6 para las salas */
   grid-template-rows: auto repeat(13, 1fr); /* Fila de encabezado y 13 filas para las horas */
   gap: 4px; /* Espacio entre celdas */

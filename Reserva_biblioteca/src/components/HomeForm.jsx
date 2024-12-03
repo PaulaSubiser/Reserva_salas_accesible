@@ -29,21 +29,22 @@ export default function Form() {
       };
 
     form.useSubmit(async (state) => {
-        alert(JSON.stringify(form.getState().values));
         var reservas = JSON.parse(localStorage.getItem("reservas") || "[]");
         //localStorage.clear();
-        alert(JSON.stringify(reservas));
         var ids = reservas.map(reserva => reserva.id);
         var id_reserva = 0;
         if (ids != ""){
             var maxId = Math.max(...ids);
-            alert(ids);
             id_reserva = maxId + 1;
         }
-        var reserva = {id: id_reserva, fecha: form.getState().values["calendar"], centro: form.getState().values["centro"]};
+        var reserva = {id: id_reserva, fecha: form.getState().values["calendar"], centro: form.getState().values["centro"], hora: "", sala: ""};
         reservas.push(reserva)
         alert(JSON.stringify(reservas))
         localStorage.setItem("reservas", JSON.stringify(reservas));
+        const elem = document.getElementById("homeform");
+        elem.style.display = "none";
+        const schedule = document.getElementById("schedule");
+        schedule.style.display = "grid";
     });
 
     return (
@@ -51,6 +52,7 @@ export default function Form() {
             store={form}
             aria-labelledby="Login"
             className="wrapper"
+            id="homeform"
         >
             <h2 id="Login" className="heading">
                 Elige fecha y centro

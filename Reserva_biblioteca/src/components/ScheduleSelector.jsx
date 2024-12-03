@@ -9,9 +9,10 @@ const ScheduleSelector = ({ fecha, centro }) => {  // Recibir fecha y centro com
 
   // Obtener la lista de diccionarios de localStorage y filtrar por fecha y centro
   useEffect(() => {
-    const storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
+    var storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
+    var seleccion = storedSchedules.pop()
     const unavailable = storedSchedules
-      .filter(schedule => schedule.fecha === fecha && schedule.centro === centro) // Filtramos por fecha y centro
+      .filter(schedule => schedule.fecha === seleccion.fecha && schedule.centro === seleccion.centro) // Filtramos por fecha y centro
       .map(schedule => `${schedule.key}-${schedule.time}`); // Obtenemos la combinación key-time
     
     console.log(unavailable);
@@ -86,7 +87,7 @@ const ScheduleSelector = ({ fecha, centro }) => {  // Recibir fecha y centro com
   const rooms = ['Sala 1', 'Sala 2', 'Sala 3', 'Sala 4', 'Sala 5', 'Sala 6']; // Salas
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} id="schedule">
       {/* Encabezado con las salas */}
       <div className={styles.timelabel}></div> {/* Espacio vacío en la esquina superior izquierda */}
       {rooms.map((room, roomIndex) => (
