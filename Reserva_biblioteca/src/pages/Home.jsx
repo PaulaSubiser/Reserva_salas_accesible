@@ -6,7 +6,7 @@ function Home(){
     return (
         <>
         <NavBar></NavBar>
-        <h1> Realiza una reserva </h1>
+        <h1 style={{margin:"1vw"}}> HOME: Realiza una reserva </h1>
         <HomeForm />
         </>
     )

@@ -67,8 +67,8 @@
 
 /* Clase para estado "disabled" */
 .cellwrapper.disabled {
-  background-color: gray; /* Fondo gris */
-  color: white; /* Texto blanco */
+  background-color: rgb(243, 110, 110); /* Fondo gris */
+  color: rgb(0, 0, 0); /* Texto blanco */
   cursor: not-allowed; /* Cursor deshabilitado */
 }
 

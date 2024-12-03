@@ -17,10 +17,18 @@
         --background: oklch(from var(--color-primary) 20% 0.002 h);
     }
 
+    .button-container {
+        display: flex;
+        margin: 1rem;
+        place-self: center;
+        font-weight: bold;
+        gap: 1rem; /* Espacio entre botones */
+      }
+
     .ak-button {
         --size: 2.5rem;
         display: flex;
-        max-width: 100%;
+        width: 20vw;
         height: var(--size);
         align-items: center;
         justify-content: center;

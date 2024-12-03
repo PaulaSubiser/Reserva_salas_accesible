@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from '../css/ScheduleSelector.module.css'; // Importa el archivo CSS
 import Cell from './Cell'; // Componente Cell actualizado
 import { useNavigate } from "react-router-dom";
+import "../css/Button.css";
 
 const ScheduleSelector = () => {
   const [selectedTimes, setSelectedTimes] = useState([]);
@@ -119,32 +120,6 @@ const ScheduleSelector = () => {
           newFocusedTime = `${rooms[roomIndex + 1]}-${time}`;
         }
         break;
-        case 'Tab':
-          const allCells = times.flatMap((time) => rooms.map((room) => `${room}-${time}`));
-          const currentIndex = allCells.indexOf(currentTime);
-
-          // Si estamos en la primera celda y presionamos Shift + Tab, o en la última celda con Tab
-          if (e.shiftKey && currentIndex === 0) {
-            // Si estamos en la primera celda, permitimos salir con Shift + Tab
-            e.preventDefault();
-            // Aquí puedes hacer lo que quieras para permitir salir del componente.
-            return;
-          } else if (!e.shiftKey && currentIndex === allCells.length - 1) {
-            // Si estamos en la última celda, permitimos salir con Tab
-            e.preventDefault();
-            // Aquí también puedes hacer lo que quieras para permitir salir del componente.
-            return;
-          }
-
-          // Normalmente avanzamos o retrocedemos
-          if (e.shiftKey) {
-            // Si Shift + Tab, retrocedemos
-            newFocusedTime = allCells[currentIndex - 1] || currentTime; // Si no hay más celdas hacia atrás, mantener el foco
-          } else {
-            // Si solo Tab, avanzamos
-            newFocusedTime = allCells[currentIndex + 1] || currentTime; // Si no hay más celdas hacia adelante, mantener el foco
-          }
-          break;
       default:
         return;
     }
@@ -158,10 +133,12 @@ const ScheduleSelector = () => {
   const rooms = ['Sala 1', 'Sala 2', 'Sala 3', 'Sala 4', 'Sala 5', 'Sala 6']; // Salas
 
   return (
-    <div>
-      <button type="button" onClick={handleClickVolver}>Volver</button>
-      <button type="button" onClick={handleClickAceptar}>Aceptar</button>
-      <div className={styles.wrapper} id="schedule">
+    <div role='row'>
+      <div className="button-container">
+      <button className="ak-button ak-button-default" onClick={handleClickVolver}>Volver</button>
+      <button className="ak-button ak-button-default" onClick={handleClickAceptar}>Aceptar</button>
+      </div>
+      <div className={styles.wrapper} id="schedule" role='grid'>
         {/* Encabezado con las salas */}
         <div className={styles.timelabel}></div> {/* Espacio vacío en la esquina superior izquierda */}
         {rooms.map((room, roomIndex) => (

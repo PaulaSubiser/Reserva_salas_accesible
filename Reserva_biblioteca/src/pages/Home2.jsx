@@ -6,7 +6,7 @@ function Home2(){
     return (
         <>
         <NavBar></NavBar>
-        <h1> Selecciona sala y hora </h1>
+        <h1 style={{margin:"1vw"}}>  HOME: Selecciona sala y hora </h1>
         <ScheduleSelector />
         </>
     )

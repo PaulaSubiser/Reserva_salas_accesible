@@ -59,18 +59,19 @@ export default function Form() {
             aria-labelledby="Login"
             className="wrapper"
             id="homeform"
+            style={{margin:"5vh"}}
         >
-            <h2 id="Login" className="heading">
+            <h1 id="Login" className="heading">
                 Elige fecha y centro
-            </h2>
+            </h1>
             <div className="field">
-                <Ariakit.FormLabel name={form.names.calendar}>Fecha</Ariakit.FormLabel>
-                <DatePicker value={value_cal} onChange={handleChange}/>
+                <Ariakit.FormLabel id="calendar_form" name={form.names.calendar}>Fecha</Ariakit.FormLabel>
+                <DatePicker value={value_cal} onChange={handleChange} aria-labelledby="calendar_form"/>
                 <Ariakit.FormError name={form.names.calendar} className="error" />
             </div>
             <div className="field">
-                <Ariakit.FormLabel name={form.names.centro}>Centro</Ariakit.FormLabel>
-                <Select required defaultValue="UPS Leganes" onChange={handleChange2}>
+                <Ariakit.FormLabel id="centro_form" name={form.names.centro}>Centro</Ariakit.FormLabel>
+                <Select required defaultValue="UPS Leganes" onChange={handleChange2} aria-labelledby="centro_form">
                     <Option value="UPS Leganes">UPS Leganes</Option>
                     <Option value="UC3M Getafe">UC3M Getafe</Option>
                 </Select>
