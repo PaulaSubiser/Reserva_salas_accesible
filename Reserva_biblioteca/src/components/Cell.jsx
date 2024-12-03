@@ -34,21 +34,21 @@ const Cell = memo(({ time, status, onClick, onFocus, onKeyDown, isSelected, isHo
     .filter(Boolean) // Filtrar valores nulos o falsos
     .join(' '); // Combinar en una sola cadena
 
-  return (
-    <div
-      ref={cellRef} // Referencia para manejar el foco
-      className={cellClasses} // Aplicar las clases dinámicas
-      role="gridcell" // Rol de accesibilidad
-      aria-selected={isSelected} // Indicar si está seleccionada
-      tabIndex={isFocused ? 0 : -1} // Solo enfocable si está en foco
-      onClick={() => onClick(time)} // Llamar al manejador de clic
-      onFocus={() => onFocus(time)} // Manejar el foco
-      onKeyDown={handleKeyDown} // Manejar las teclas
-      aria-label={`Celda de ${time}`} // Etiqueta para lectores de pantalla
-    >
-      {status && <span className={styles.statusText}>{status}</span>} {/* Renderizar el estado */}
-    </div>
-  );
+    return (
+      <div
+        ref={cellRef} // Referencia para manejar el foco
+        className={cellClasses} // Aplicar las clases dinámicas
+        role="gridcell" // Rol de accesibilidad
+        aria-selected={isSelected} // Indicar si está seleccionada
+        tabIndex={0} // Todas las celdas son accesibles con Tab
+        onClick={() => onClick(time)} // Llamar al manejador de clic
+        onFocus={() => onFocus(time)} // Manejar el foco
+        onKeyDown={handleKeyDown} // Manejar las teclas
+        aria-label={`Celda de ${time}`} // Etiqueta para lectores de pantalla
+      >
+        {status && <span className={styles.statusText}>{status}</span>} {/* Renderizar el estado */}
+      </div>
+    );    
 });
 
 export default Cell;

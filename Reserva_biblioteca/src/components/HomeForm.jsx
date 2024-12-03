@@ -32,6 +32,12 @@ export default function Form() {
 
     form.useSubmit(async (state) => {
         let reservas = JSON.parse(localStorage.getItem("reservas") || "[]");
+        let ultimaSeleccion = reservas.pop();
+        if (ultimaSeleccion != null){
+            if (JSON.stringify(ultimaSeleccion.sesiones) != "{}"){
+                reservas.push(ultimaSeleccion);
+            }
+        }
         //localStorage.clear();
         let ids = reservas.map(reserva => reserva.id);
         let id_reserva = 0;

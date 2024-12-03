@@ -11,121 +11,92 @@ const ScheduleSelector = () => {
 
   // Obtener la lista de diccionarios de localStorage y filtrar por fecha y centro
   useEffect(() => {
-    // Obtener las reservas desde el localStorage
     let storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
-  
-    // Identificar la última selección para obtener la fecha y el centro
-    const ultimaSeleccion = storedSchedules.pop()
+    const ultimaSeleccion = storedSchedules.pop();
     if (!ultimaSeleccion) {
       console.warn("No se encontró ninguna selección activa.");
       return;
     }
-  
     const { fecha, centro } = ultimaSeleccion;
   
-    // Imprimir la fecha de la última selección
-    console.log("Fecha de la última selección:", fecha);
-  
-    // Imprimir todas las fechas de las reservas
-    storedSchedules.forEach((reserva, index) => {
-      console.log(`Reserva ${index + 1}: Fecha - ${reserva.fecha}`);
-    });
-  
-    // Filtrar las reservas que coinciden con la fecha y el centro
     const unavailable = storedSchedules
       .filter(schedule => schedule.fecha.slice(0, 10) === fecha.slice(0, 10) && schedule.centro === centro)
-      .flatMap(schedule => schedule.sesiones) // Acceder a la lista de sesiones
-      .map(sesion => `${sesion.key}-${sesion.time}`); // Convertir las sesiones a formato "key-time"
+      .flatMap(schedule => schedule.sesiones)
+      .map(sesion => `${sesion.key}-${sesion.time}`);
   
-    // Actualizar las celdas no disponibles
     setUnavailableTimes(unavailable);
-  }, []); // Este efecto solo se ejecuta al montar el componente
-  
+  }, []);
 
- 
   const handleCellClick = (time) => {
-    // Verificar si la celda está en la lista de no disponibles
     if (unavailableTimes.includes(time)) {
-      return; // No hacer nada si la celda está no disponible
+      return;
     }
   
     setSelectedTimes((prev) => {
       const updatedTimes = prev.includes(time)
-        ? prev.filter((t) => t !== time) // Si ya está seleccionada, eliminarla
-        : [...prev, time]; // Si no está seleccionada, añadirla
+        ? prev.filter((t) => t !== time)
+        : [...prev, time];
   
-      // Comprobación: Si se añaden celdas del mismo horario, revertir
-      const [newRoom, newTime] = time.split('-'); // Extraer sala y horario
-      const selectedTimesOnly = updatedTimes.map((t) => t.split('-')[1]); // Filtrar solo los horarios seleccionados
+      const [newRoom, newTime] = time.split('-');
+      const selectedTimesOnly = updatedTimes.map((t) => t.split('-')[1]);
   
-      // Verificar duplicados en el mismo horario
       if (selectedTimesOnly.filter((t) => t === newTime).length > 1) {
         console.warn('No se puede seleccionar más de una celda en el mismo horario:', newTime);
-        return prev; // No permitir añadir la celda
+        return prev;
       }
   
-      // Comprobación: Solo permitir máximo 2 celdas seleccionadas
       if (updatedTimes.length > 2) {
         console.warn('Solo puedes tener 2 celdas seleccionadas.');
-        return prev; // Revertir al estado previo
+        return prev;
       }
   
-      console.log('Selected Times Updated:', updatedTimes); // Log del estado actualizado
-      return updatedTimes; // Devolver el nuevo estado válido
+      return updatedTimes;
     });
   };
-  
 
-  useEffect(() => {
-    console.log('Selected Times Changed:', selectedTimes);
-  }, [selectedTimes]); // Se ejecuta cada vez que selectedTimes cambia
-  
   const handleClickVolver = () => {
     let storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
-    storedSchedules.pop()
+    storedSchedules.pop();
     localStorage.setItem("reservas", JSON.stringify(storedSchedules));
     navigate("/Home");
-  }
+  };
+  
   const handleClickAceptar = () => {
     let storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
-    let seleccion = storedSchedules.pop(); // Obtener la última selección (fecha y centro)
+    let seleccion = storedSchedules.pop();
   
     if (selectedTimes.length > 0) {
-      // Crear una lista de sesiones basadas en las celdas seleccionadas
       const sesiones = selectedTimes.map((time) => {
-        const [key, horario] = time.split('-'); // Dividir en sala y horario
-        return { key, time: horario }; // Crear objeto de sesión
+        const [key, horario] = time.split('-');
+        return { key, time: horario };
       });
   
-      // Construir la reserva completa con las sesiones
       const nuevaReserva = {
-        id: seleccion.id, // Mantener el ID original
+        id: seleccion.id,
         fecha: seleccion.fecha,
         centro: seleccion.centro,
-        sesiones, // Incluir las sesiones en la reserva
+        sesiones,
       };
   
-      storedSchedules.push(nuevaReserva); // Añadir la nueva reserva
-      localStorage.setItem('reservas', JSON.stringify(storedSchedules)); // Guardar en localStorage
+      storedSchedules.push(nuevaReserva);
+      localStorage.setItem('reservas', JSON.stringify(storedSchedules));
       alert('Reserva guardada exitosamente');
-      navigate('/Reservas'); // Redirigir al componente de reservas
+      navigate('/Reservas');
     } else {
       alert('Debes seleccionar al menos una celda antes de confirmar.');
     }
   };
-  
 
   const handleKeyDown = (e, currentTime) => {
     const times = Array.from({ length: 13 }, (_, i) => `${9 + i}:00`); // Horas de 9 a 21
     const rooms = ['Sala 1', 'Sala 2', 'Sala 3', 'Sala 4', 'Sala 5', 'Sala 6']; // Salas
-
-    // Separar sala y hora de `currentTime`
+  
     const [room, time] = currentTime.split('-');
     const timeIndex = times.indexOf(time);
     const roomIndex = rooms.indexOf(room);
-
+  
     let newFocusedTime = currentTime;
-
+  
     // Navegación mediante teclado
     switch (e.key) {
       case 'ArrowUp':
@@ -148,13 +119,40 @@ const ScheduleSelector = () => {
           newFocusedTime = `${rooms[roomIndex + 1]}-${time}`;
         }
         break;
+        case 'Tab':
+          const allCells = times.flatMap((time) => rooms.map((room) => `${room}-${time}`));
+          const currentIndex = allCells.indexOf(currentTime);
+
+          // Si estamos en la primera celda y presionamos Shift + Tab, o en la última celda con Tab
+          if (e.shiftKey && currentIndex === 0) {
+            // Si estamos en la primera celda, permitimos salir con Shift + Tab
+            e.preventDefault();
+            // Aquí puedes hacer lo que quieras para permitir salir del componente.
+            return;
+          } else if (!e.shiftKey && currentIndex === allCells.length - 1) {
+            // Si estamos en la última celda, permitimos salir con Tab
+            e.preventDefault();
+            // Aquí también puedes hacer lo que quieras para permitir salir del componente.
+            return;
+          }
+
+          // Normalmente avanzamos o retrocedemos
+          if (e.shiftKey) {
+            // Si Shift + Tab, retrocedemos
+            newFocusedTime = allCells[currentIndex - 1] || currentTime; // Si no hay más celdas hacia atrás, mantener el foco
+          } else {
+            // Si solo Tab, avanzamos
+            newFocusedTime = allCells[currentIndex + 1] || currentTime; // Si no hay más celdas hacia adelante, mantener el foco
+          }
+          break;
       default:
         return;
     }
-
+  
     e.preventDefault(); // Prevenir el comportamiento por defecto del navegador
     setFocusedTime(newFocusedTime); // Actualizar el estado de foco
   };
+  
 
   const times = Array.from({ length: 13 }, (_, i) => `${9 + i}:00`); // Horas de 9 a 21
   const rooms = ['Sala 1', 'Sala 2', 'Sala 3', 'Sala 4', 'Sala 5', 'Sala 6']; // Salas
@@ -180,8 +178,6 @@ const ScheduleSelector = () => {
               const currentTime = `${room}-${time}`;
               const isSelected = selectedTimes.includes(currentTime);
               const isFocused = focusedTime === currentTime;
-
-              // Determinar si la celda está no disponible
               const isUnavailable = unavailableTimes.includes(currentTime);
 
               return (
@@ -190,10 +186,11 @@ const ScheduleSelector = () => {
                   time={currentTime}
                   onClick={handleCellClick}
                   onFocus={() => setFocusedTime(currentTime)}
-                  onKeyDown={handleKeyDown}
+                  onKeyDown={(e) => handleKeyDown(e, currentTime)}
                   isSelected={isSelected}
                   isFocused={isFocused}
-                  status={isUnavailable ? 'No disponible' : 'Disponible'} // Cambiar el estado según disponibilidad
+                  status={isUnavailable ? 'No disponible' : 'Disponible'}
+                  tabIndex={isUnavailable ? -1 : 0} // Añadir tabIndex para que solo se pueda tabular por celdas disponibles
                 />
               );
             })}
@@ -205,3 +202,4 @@ const ScheduleSelector = () => {
 };
 
 export default ScheduleSelector;
+
