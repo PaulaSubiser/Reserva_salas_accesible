@@ -11,7 +11,9 @@
 /* Estilo base de la celda */
 .cellwrapper {
   width: 100%;
+  min-width: 50px; /* Tamaño mínimo consistente */
   height: 50px;
+  min-height: 50px; /* Tamaño mínimo consistente */
   background-color: var(--paleBlue);
   border: none;
   transition: background-color 0.3s, border 0.3s;
@@ -20,6 +22,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box; /* Asegurar que padding/border no altere dimensiones */
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
 }
 
 /* Estado seleccionado */
@@ -32,7 +36,13 @@
 .cellwrapper.hovered,
 .cellwrapper:hover {
   background-color: var(--lightBlue);
+  border-color: transparent; /* Evita que los bordes modifiquen el layout */
 }
+.cellwrapper.focused {
+  border: 2px solid var(--darkBlue); /* Asegúrate de que el borde esté incluido en el tamaño */
+  box-sizing: border-box;
+}
+
 
 /* Estado enfocado */
 .cellwrapper.focused {

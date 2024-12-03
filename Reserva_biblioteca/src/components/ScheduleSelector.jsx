@@ -1,44 +1,118 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../css/ScheduleSelector.module.css'; // Importa el archivo CSS
 import Cell from './Cell'; // Componente Cell actualizado
+import { useNavigate } from "react-router-dom";
 
-const ScheduleSelector = ({ fecha, centro }) => {  // Recibir fecha y centro como props
+const ScheduleSelector = () => {
   const [selectedTimes, setSelectedTimes] = useState([]);
   const [focusedTime, setFocusedTime] = useState(null);
   const [unavailableTimes, setUnavailableTimes] = useState([]); // Estado para celdas no disponibles
+  const navigate = useNavigate();
 
   // Obtener la lista de diccionarios de localStorage y filtrar por fecha y centro
   useEffect(() => {
-    const storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
+    // Obtener las reservas desde el localStorage
+    let storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
+  
+    // Identificar la última selección para obtener la fecha y el centro
+    const ultimaSeleccion = storedSchedules.pop()
+    if (!ultimaSeleccion) {
+      console.warn("No se encontró ninguna selección activa.");
+      return;
+    }
+  
+    const { fecha, centro } = ultimaSeleccion;
+  
+    // Imprimir la fecha de la última selección
+    console.log("Fecha de la última selección:", fecha);
+  
+    // Imprimir todas las fechas de las reservas
+    storedSchedules.forEach((reserva, index) => {
+      console.log(`Reserva ${index + 1}: Fecha - ${reserva.fecha}`);
+    });
+  
+    // Filtrar las reservas que coinciden con la fecha y el centro
     const unavailable = storedSchedules
-      .filter(schedule => schedule.fecha === fecha && schedule.centro === centro) // Filtramos por fecha y centro
-      .map(schedule => `${schedule.key}-${schedule.time}`); // Obtenemos la combinación key-time
-    
-    console.log(unavailable);
-   setUnavailableTimes(unavailable);  // Guardamos las celdas no disponibles
-  }, [fecha, centro]);  // Dependencias para actualizar cuando cambian fecha o centro
+      .filter(schedule => schedule.fecha.slice(0, 10) === fecha.slice(0, 10) && schedule.centro === centro)
+      .flatMap(schedule => schedule.sesiones) // Acceder a la lista de sesiones
+      .map(sesion => `${sesion.key}-${sesion.time}`); // Convertir las sesiones a formato "key-time"
+  
+    // Actualizar las celdas no disponibles
+    setUnavailableTimes(unavailable);
+  }, []); // Este efecto solo se ejecuta al montar el componente
+  
 
+ 
   const handleCellClick = (time) => {
     // Verificar si la celda está en la lista de no disponibles
     if (unavailableTimes.includes(time)) {
       return; // No hacer nada si la celda está no disponible
     }
-
-    // Alternar el estado de selección solo si está disponible
+  
     setSelectedTimes((prev) => {
       const updatedTimes = prev.includes(time)
         ? prev.filter((t) => t !== time) // Si ya está seleccionada, eliminarla
         : [...prev, time]; // Si no está seleccionada, añadirla
-
-      // Log para ver el estado de selectedTimes después de cada cambio
-      console.log('Selected Times Updated:', updatedTimes);
-      return updatedTimes; // Devolver el nuevo estado
+  
+      // Comprobación: Si se añaden celdas del mismo horario, revertir
+      const [newRoom, newTime] = time.split('-'); // Extraer sala y horario
+      const selectedTimesOnly = updatedTimes.map((t) => t.split('-')[1]); // Filtrar solo los horarios seleccionados
+  
+      // Verificar duplicados en el mismo horario
+      if (selectedTimesOnly.filter((t) => t === newTime).length > 1) {
+        console.warn('No se puede seleccionar más de una celda en el mismo horario:', newTime);
+        return prev; // No permitir añadir la celda
+      }
+  
+      // Comprobación: Solo permitir máximo 2 celdas seleccionadas
+      if (updatedTimes.length > 2) {
+        console.warn('Solo puedes tener 2 celdas seleccionadas.');
+        return prev; // Revertir al estado previo
+      }
+  
+      console.log('Selected Times Updated:', updatedTimes); // Log del estado actualizado
+      return updatedTimes; // Devolver el nuevo estado válido
     });
   };
+  
 
   useEffect(() => {
     console.log('Selected Times Changed:', selectedTimes);
   }, [selectedTimes]); // Se ejecuta cada vez que selectedTimes cambia
+  
+  const handleClickVolver = () => {
+    let storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
+    storedSchedules.pop()
+    localStorage.setItem("reservas", JSON.stringify(storedSchedules));
+    navigate("/Home");
+  }
+  const handleClickAceptar = () => {
+    let storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
+    let seleccion = storedSchedules.pop(); // Obtener la última selección (fecha y centro)
+  
+    if (selectedTimes.length > 0) {
+      // Crear una lista de sesiones basadas en las celdas seleccionadas
+      const sesiones = selectedTimes.map((time) => {
+        const [key, horario] = time.split('-'); // Dividir en sala y horario
+        return { key, time: horario }; // Crear objeto de sesión
+      });
+  
+      // Construir la reserva completa con las sesiones
+      const nuevaReserva = {
+        id: seleccion.id, // Mantener el ID original
+        fecha: seleccion.fecha,
+        centro: seleccion.centro,
+        sesiones, // Incluir las sesiones en la reserva
+      };
+  
+      storedSchedules.push(nuevaReserva); // Añadir la nueva reserva
+      localStorage.setItem('reservas', JSON.stringify(storedSchedules)); // Guardar en localStorage
+      alert('Reserva guardada exitosamente');
+      navigate('/Reservas'); // Redirigir al componente de reservas
+    } else {
+      alert('Debes seleccionar al menos una celda antes de confirmar.');
+    }
+  };
   
 
   const handleKeyDown = (e, currentTime) => {
@@ -86,42 +160,46 @@ const ScheduleSelector = ({ fecha, centro }) => {  // Recibir fecha y centro com
   const rooms = ['Sala 1', 'Sala 2', 'Sala 3', 'Sala 4', 'Sala 5', 'Sala 6']; // Salas
 
   return (
-    <div className={styles.wrapper}>
-      {/* Encabezado con las salas */}
-      <div className={styles.timelabel}></div> {/* Espacio vacío en la esquina superior izquierda */}
-      {rooms.map((room, roomIndex) => (
-        <div className={styles.daylabel} key={roomIndex}>
-          {room}
-        </div>
-      ))}
+    <div>
+      <button type="button" onClick={handleClickVolver}>Volver</button>
+      <button type="button" onClick={handleClickAceptar}>Aceptar</button>
+      <div className={styles.wrapper} id="schedule">
+        {/* Encabezado con las salas */}
+        <div className={styles.timelabel}></div> {/* Espacio vacío en la esquina superior izquierda */}
+        {rooms.map((room, roomIndex) => (
+          <div className={styles.daylabel} key={roomIndex}>
+            {room}
+          </div>
+        ))}
 
-      {/* Horas y celdas */}
-      {times.map((time) => (
-        <React.Fragment key={time}>
-          <div className={styles.timelabel}>{time}</div> {/* Etiqueta de la hora */}
-          {rooms.map((room) => {
-            const currentTime = `${room}-${time}`;
-            const isSelected = selectedTimes.includes(currentTime);
-            const isFocused = focusedTime === currentTime;
+        {/* Horas y celdas */}
+        {times.map((time) => (
+          <React.Fragment key={time}>
+            <div className={styles.timelabel}>{time}</div> {/* Etiqueta de la hora */}
+            {rooms.map((room) => {
+              const currentTime = `${room}-${time}`;
+              const isSelected = selectedTimes.includes(currentTime);
+              const isFocused = focusedTime === currentTime;
 
-            // Determinar si la celda está no disponible
-            const isUnavailable = unavailableTimes.includes(currentTime);
+              // Determinar si la celda está no disponible
+              const isUnavailable = unavailableTimes.includes(currentTime);
 
-            return (
-              <Cell
-                key={currentTime}
-                time={currentTime}
-                onClick={handleCellClick}
-                onFocus={() => setFocusedTime(currentTime)}
-                onKeyDown={handleKeyDown}
-                isSelected={isSelected}
-                isFocused={isFocused}
-                status={isUnavailable ? 'No disponible' : 'Disponible'} // Cambiar el estado según disponibilidad
-              />
-            );
-          })}
-        </React.Fragment>
-      ))}
+              return (
+                <Cell
+                  key={currentTime}
+                  time={currentTime}
+                  onClick={handleCellClick}
+                  onFocus={() => setFocusedTime(currentTime)}
+                  onKeyDown={handleKeyDown}
+                  isSelected={isSelected}
+                  isFocused={isFocused}
+                  status={isUnavailable ? 'No disponible' : 'Disponible'} // Cambiar el estado según disponibilidad
+                />
+              );
+            })}
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   );
 };
