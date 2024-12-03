@@ -22,23 +22,39 @@ const ScheduleSelector = () => {
     setUnavailableTimes(unavailable);  // Guardamos las celdas no disponibles
   }, []);  // Dependencias para actualizar cuando cambian fecha o centro
 
+ 
   const handleCellClick = (time) => {
     // Verificar si la celda está en la lista de no disponibles
     if (unavailableTimes.includes(time)) {
       return; // No hacer nada si la celda está no disponible
     }
-
-    // Alternar el estado de selección solo si está disponible
+  
     setSelectedTimes((prev) => {
       const updatedTimes = prev.includes(time)
         ? prev.filter((t) => t !== time) // Si ya está seleccionada, eliminarla
         : [...prev, time]; // Si no está seleccionada, añadirla
-
-      // Log para ver el estado de selectedTimes después de cada cambio
-      console.log('Selected Times Updated:', updatedTimes);
-      return updatedTimes; // Devolver el nuevo estado
+  
+      // Comprobación: Si se añaden celdas del mismo horario, revertir
+      const [newRoom, newTime] = time.split('-'); // Extraer sala y horario
+      const selectedTimesOnly = updatedTimes.map((t) => t.split('-')[1]); // Filtrar solo los horarios seleccionados
+  
+      // Verificar duplicados en el mismo horario
+      if (selectedTimesOnly.filter((t) => t === newTime).length > 1) {
+        console.warn('No se puede seleccionar más de una celda en el mismo horario:', newTime);
+        return prev; // No permitir añadir la celda
+      }
+  
+      // Comprobación: Solo permitir máximo 2 celdas seleccionadas
+      if (updatedTimes.length > 2) {
+        console.warn('Solo puedes tener 2 celdas seleccionadas.');
+        return prev; // Revertir al estado previo
+      }
+  
+      console.log('Selected Times Updated:', updatedTimes); // Log del estado actualizado
+      return updatedTimes; // Devolver el nuevo estado válido
     });
   };
+  
 
   useEffect(() => {
     console.log('Selected Times Changed:', selectedTimes);
