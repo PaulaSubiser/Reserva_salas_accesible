@@ -5,6 +5,7 @@ import "../css/Form.css";
 import { DatePicker } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
@@ -16,6 +17,7 @@ export default function Form() {
     const [value_cal, setValue_cal] = useState(new Date());
     const [centro_val, setValue_centro] = useState("UPS Leganes");
     const form = Ariakit.useFormStore({ defaultValues: { calendar: value_cal, centro: centro_val } });
+    const navigate = useNavigate();
 
     
     const handleChange = (value, event) => {
@@ -29,22 +31,19 @@ export default function Form() {
       };
 
     form.useSubmit(async (state) => {
-        var reservas = JSON.parse(localStorage.getItem("reservas") || "[]");
+        let reservas = JSON.parse(localStorage.getItem("reservas") || "[]");
         //localStorage.clear();
-        var ids = reservas.map(reserva => reserva.id);
-        var id_reserva = 0;
+        let ids = reservas.map(reserva => reserva.id);
+        let id_reserva = 0;
         if (ids != ""){
-            var maxId = Math.max(...ids);
+            let maxId = Math.max(...ids);
             id_reserva = maxId + 1;
         }
-        var reserva = {id: id_reserva, fecha: form.getState().values["calendar"], centro: form.getState().values["centro"], hora: "", sala: ""};
+        let reserva = {id: id_reserva, fecha: form.getState().values["calendar"], centro: form.getState().values["centro"], key: "", time: ""};
         reservas.push(reserva)
         alert(JSON.stringify(reservas))
         localStorage.setItem("reservas", JSON.stringify(reservas));
-        const elem = document.getElementById("homeform");
-        elem.style.display = "none";
-        const schedule = document.getElementById("schedule");
-        schedule.style.display = "grid";
+        navigate("/Home2");
     });
 
     return (

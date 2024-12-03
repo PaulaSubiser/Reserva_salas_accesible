@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../css/ScheduleSelector.module.css'; // Importa el archivo CSS
 import Cell from './Cell'; // Componente Cell actualizado
+import { useNavigate } from "react-router-dom";
 
-const ScheduleSelector = ({ fecha, centro }) => {  // Recibir fecha y centro como props
+const ScheduleSelector = () => {
   const [selectedTimes, setSelectedTimes] = useState([]);
   const [focusedTime, setFocusedTime] = useState(null);
   const [unavailableTimes, setUnavailableTimes] = useState([]); // Estado para celdas no disponibles
+  const navigate = useNavigate();
 
   // Obtener la lista de diccionarios de localStorage y filtrar por fecha y centro
   useEffect(() => {
-    var storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
-    var seleccion = storedSchedules.pop()
+    let storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
+    let seleccion = storedSchedules.pop()
+    alert(JSON.stringify(seleccion))
     const unavailable = storedSchedules
       .filter(schedule => schedule.fecha === seleccion.fecha && schedule.centro === seleccion.centro) // Filtramos por fecha y centro
       .map(schedule => `${schedule.key}-${schedule.time}`); // Obtenemos la combinación key-time
     
     console.log(unavailable);
-   setUnavailableTimes(unavailable);  // Guardamos las celdas no disponibles
-  }, [fecha, centro]);  // Dependencias para actualizar cuando cambian fecha o centro
+    setUnavailableTimes(unavailable);  // Guardamos las celdas no disponibles
+  }, []);  // Dependencias para actualizar cuando cambian fecha o centro
 
   const handleCellClick = (time) => {
     // Verificar si la celda está en la lista de no disponibles
@@ -41,6 +44,25 @@ const ScheduleSelector = ({ fecha, centro }) => {  // Recibir fecha y centro com
     console.log('Selected Times Changed:', selectedTimes);
   }, [selectedTimes]); // Se ejecuta cada vez que selectedTimes cambia
   
+  const handleClickVolver = () => {
+    let storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
+    storedSchedules.pop()
+    localStorage.setItem("reservas", JSON.stringify(storedSchedules));
+    navigate("/Home");
+  }
+  const handleClickAceptar = () => {
+    let storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
+    let seleccion = storedSchedules.pop()
+    if(selectedTimes.length == 1){
+      //const [sala, hora] = selectedTimes.split("-");
+      //alert(sala, hora);
+      //seleccion = {id: seleccion.id, fecha: seleccion.fecha, centro: seleccion.fecha, key: sala, time: hora};
+      //storedSchedules.push(seleccion);
+      alert(storedSchedules)
+      //localStorage.setItem("reservas", JSON.stringify(storedSchedules));
+    }
+    //navigate("/Reservas");
+  }
 
   const handleKeyDown = (e, currentTime) => {
     const times = Array.from({ length: 13 }, (_, i) => `${9 + i}:00`); // Horas de 9 a 21
@@ -87,42 +109,46 @@ const ScheduleSelector = ({ fecha, centro }) => {  // Recibir fecha y centro com
   const rooms = ['Sala 1', 'Sala 2', 'Sala 3', 'Sala 4', 'Sala 5', 'Sala 6']; // Salas
 
   return (
-    <div className={styles.wrapper} id="schedule">
-      {/* Encabezado con las salas */}
-      <div className={styles.timelabel}></div> {/* Espacio vacío en la esquina superior izquierda */}
-      {rooms.map((room, roomIndex) => (
-        <div className={styles.daylabel} key={roomIndex}>
-          {room}
-        </div>
-      ))}
+    <div>
+      <button type="button" onClick={handleClickVolver}>Volver</button>
+      <button type="button" onClick={handleClickAceptar}>Aceptar</button>
+      <div className={styles.wrapper} id="schedule">
+        {/* Encabezado con las salas */}
+        <div className={styles.timelabel}></div> {/* Espacio vacío en la esquina superior izquierda */}
+        {rooms.map((room, roomIndex) => (
+          <div className={styles.daylabel} key={roomIndex}>
+            {room}
+          </div>
+        ))}
 
-      {/* Horas y celdas */}
-      {times.map((time) => (
-        <React.Fragment key={time}>
-          <div className={styles.timelabel}>{time}</div> {/* Etiqueta de la hora */}
-          {rooms.map((room) => {
-            const currentTime = `${room}-${time}`;
-            const isSelected = selectedTimes.includes(currentTime);
-            const isFocused = focusedTime === currentTime;
+        {/* Horas y celdas */}
+        {times.map((time) => (
+          <React.Fragment key={time}>
+            <div className={styles.timelabel}>{time}</div> {/* Etiqueta de la hora */}
+            {rooms.map((room) => {
+              const currentTime = `${room}-${time}`;
+              const isSelected = selectedTimes.includes(currentTime);
+              const isFocused = focusedTime === currentTime;
 
-            // Determinar si la celda está no disponible
-            const isUnavailable = unavailableTimes.includes(currentTime);
+              // Determinar si la celda está no disponible
+              const isUnavailable = unavailableTimes.includes(currentTime);
 
-            return (
-              <Cell
-                key={currentTime}
-                time={currentTime}
-                onClick={handleCellClick}
-                onFocus={() => setFocusedTime(currentTime)}
-                onKeyDown={handleKeyDown}
-                isSelected={isSelected}
-                isFocused={isFocused}
-                status={isUnavailable ? 'No disponible' : 'Disponible'} // Cambiar el estado según disponibilidad
-              />
-            );
-          })}
-        </React.Fragment>
-      ))}
+              return (
+                <Cell
+                  key={currentTime}
+                  time={currentTime}
+                  onClick={handleCellClick}
+                  onFocus={() => setFocusedTime(currentTime)}
+                  onKeyDown={handleKeyDown}
+                  isSelected={isSelected}
+                  isFocused={isFocused}
+                  status={isUnavailable ? 'No disponible' : 'Disponible'} // Cambiar el estado según disponibilidad
+                />
+              );
+            })}
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   );
 };
