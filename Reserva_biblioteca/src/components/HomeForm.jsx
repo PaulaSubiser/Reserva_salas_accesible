@@ -39,7 +39,8 @@ export default function Form() {
             let maxId = Math.max(...ids);
             id_reserva = maxId + 1;
         }
-        let reserva = {id: id_reserva, fecha: form.getState().values["calendar"], centro: form.getState().values["centro"], key: "", time: ""};
+        const sesion_vacia = {}
+        let reserva = {id: id_reserva, fecha: form.getState().values["calendar"], centro: form.getState().values["centro"], sesiones: sesion_vacia};
         reservas.push(reserva)
         alert(JSON.stringify(reservas))
         localStorage.setItem("reservas", JSON.stringify(reservas));

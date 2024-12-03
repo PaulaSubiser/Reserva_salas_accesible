@@ -1,7 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, memo} from 'react';
 import styles from '../css/Cell.module.css'; // Importa el archivo CSS como un módulo
 
-const Cell = ({ time, status, onClick, onFocus, onKeyDown, isSelected, isHovered, isFocused }) => {
+const Cell = memo(({ time, status, onClick, onFocus, onKeyDown, isSelected, isHovered, isFocused }) => {
   const cellRef = useRef(null);
 
   useEffect(() => {
@@ -49,6 +49,6 @@ const Cell = ({ time, status, onClick, onFocus, onKeyDown, isSelected, isHovered
       {status && <span className={styles.statusText}>{status}</span>} {/* Renderizar el estado */}
     </div>
   );
-};
+});
 
 export default Cell;

@@ -11,16 +11,36 @@ const ScheduleSelector = () => {
 
   // Obtener la lista de diccionarios de localStorage y filtrar por fecha y centro
   useEffect(() => {
+    // Obtener las reservas desde el localStorage
     let storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
-    let seleccion = storedSchedules.pop()
-    alert(JSON.stringify(seleccion))
+  
+    // Identificar la última selección para obtener la fecha y el centro
+    const ultimaSeleccion = storedSchedules.pop()
+    if (!ultimaSeleccion) {
+      console.warn("No se encontró ninguna selección activa.");
+      return;
+    }
+  
+    const { fecha, centro } = ultimaSeleccion;
+  
+    // Imprimir la fecha de la última selección
+    console.log("Fecha de la última selección:", fecha);
+  
+    // Imprimir todas las fechas de las reservas
+    storedSchedules.forEach((reserva, index) => {
+      console.log(`Reserva ${index + 1}: Fecha - ${reserva.fecha}`);
+    });
+  
+    // Filtrar las reservas que coinciden con la fecha y el centro
     const unavailable = storedSchedules
-      .filter(schedule => schedule.fecha === seleccion.fecha && schedule.centro === seleccion.centro) // Filtramos por fecha y centro
-      .map(schedule => `${schedule.key}-${schedule.time}`); // Obtenemos la combinación key-time
-    
-    console.log(unavailable);
-    setUnavailableTimes(unavailable);  // Guardamos las celdas no disponibles
-  }, []);  // Dependencias para actualizar cuando cambian fecha o centro
+      .filter(schedule => schedule.fecha.slice(0, 10) === fecha.slice(0, 10) && schedule.centro === centro)
+      .flatMap(schedule => schedule.sesiones) // Acceder a la lista de sesiones
+      .map(sesion => `${sesion.key}-${sesion.time}`); // Convertir las sesiones a formato "key-time"
+  
+    // Actualizar las celdas no disponibles
+    setUnavailableTimes(unavailable);
+  }, []); // Este efecto solo se ejecuta al montar el componente
+  
 
  
   const handleCellClick = (time) => {
@@ -68,17 +88,32 @@ const ScheduleSelector = () => {
   }
   const handleClickAceptar = () => {
     let storedSchedules = JSON.parse(localStorage.getItem('reservas')) || [];
-    let seleccion = storedSchedules.pop()
-    if(selectedTimes.length == 1){
-      //const [sala, hora] = selectedTimes.split("-");
-      //alert(sala, hora);
-      //seleccion = {id: seleccion.id, fecha: seleccion.fecha, centro: seleccion.fecha, key: sala, time: hora};
-      //storedSchedules.push(seleccion);
-      alert(storedSchedules)
-      //localStorage.setItem("reservas", JSON.stringify(storedSchedules));
+    let seleccion = storedSchedules.pop(); // Obtener la última selección (fecha y centro)
+  
+    if (selectedTimes.length > 0) {
+      // Crear una lista de sesiones basadas en las celdas seleccionadas
+      const sesiones = selectedTimes.map((time) => {
+        const [key, horario] = time.split('-'); // Dividir en sala y horario
+        return { key, time: horario }; // Crear objeto de sesión
+      });
+  
+      // Construir la reserva completa con las sesiones
+      const nuevaReserva = {
+        id: seleccion.id, // Mantener el ID original
+        fecha: seleccion.fecha,
+        centro: seleccion.centro,
+        sesiones, // Incluir las sesiones en la reserva
+      };
+  
+      storedSchedules.push(nuevaReserva); // Añadir la nueva reserva
+      localStorage.setItem('reservas', JSON.stringify(storedSchedules)); // Guardar en localStorage
+      alert('Reserva guardada exitosamente');
+      navigate('/Reservas'); // Redirigir al componente de reservas
+    } else {
+      alert('Debes seleccionar al menos una celda antes de confirmar.');
     }
-    //navigate("/Reservas");
-  }
+  };
+  
 
   const handleKeyDown = (e, currentTime) => {
     const times = Array.from({ length: 13 }, (_, i) => `${9 + i}:00`); // Horas de 9 a 21
