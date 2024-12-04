@@ -5,7 +5,6 @@ import Home from "./pages/Home.jsx"
 import Home2 from "./pages/Home2.jsx"
 import Reservas from "./pages/Reservas.jsx"
 import { Routes, Route } from 'react-router-dom'
-import { ReservaProvider } from './contexts/ReservaContext.jsx'
 
 function App() {
   return (

@@ -48,7 +48,6 @@ export default function Form() {
         const sesion_vacia = {}
         let reserva = {id: id_reserva, fecha: form.getState().values["calendar"], centro: form.getState().values["centro"], sesiones: sesion_vacia};
         reservas.push(reserva)
-        alert(JSON.stringify(reservas))
         localStorage.setItem("reservas", JSON.stringify(reservas));
         navigate("/Home2");
     });

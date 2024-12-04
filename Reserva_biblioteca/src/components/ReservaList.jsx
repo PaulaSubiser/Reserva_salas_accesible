@@ -8,6 +8,12 @@ const ReservaList = () => {
     // Cargar reservas desde localStorage al montar el componente
     useEffect(() => {
         const storedReservas = JSON.parse(localStorage.getItem("reservas")) || [];
+        let ultimaSeleccion = storedReservas.pop();
+        if (ultimaSeleccion != null){
+            if (JSON.stringify(ultimaSeleccion.sesiones) != "{}"){
+                storedReservas.push(ultimaSeleccion);
+            }
+        }
         setReservas(storedReservas);
     }, []);
 
