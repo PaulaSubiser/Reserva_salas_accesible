@@ -1,15 +1,12 @@
 import * as React from 'react';
-import Avatar from '@mui/joy/Avatar';
-import AvatarGroup from '@mui/joy/AvatarGroup';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import CardActions from '@mui/joy/CardActions';
-import IconButton from '@mui/joy/IconButton';
 import Typography from '@mui/joy/Typography';
 
-export default function Card_reserva({centro, sala, hora, fecha}) {
+export default function Card_reserva({ centro, sala, hora, fecha }) {
   return (
     <Card
       variant="outlined"
